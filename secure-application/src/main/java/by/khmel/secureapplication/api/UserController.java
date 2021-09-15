@@ -3,6 +3,7 @@ package by.khmel.secureapplication.api;
 import by.khmel.secureapplication.domain.Role;
 import by.khmel.secureapplication.domain.User;
 import by.khmel.secureapplication.dto.RoleToUserDTO;
+import by.khmel.secureapplication.service.TokenService;
 import by.khmel.secureapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final TokenService tokenService;
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
@@ -43,8 +45,8 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("/role/addtouser")
-//    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
-//
-//    }
+    @GetMapping("/token/refresh")
+    public void getAccessToken(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        tokenService.updateAccessToken(request, response);
+    }
 }

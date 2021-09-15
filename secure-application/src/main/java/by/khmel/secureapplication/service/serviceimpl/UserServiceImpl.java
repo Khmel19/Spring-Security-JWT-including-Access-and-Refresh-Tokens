@@ -1,9 +1,10 @@
-package by.khmel.secureapplication.service;
+package by.khmel.secureapplication.service.serviceimpl;
 
 import by.khmel.secureapplication.domain.Role;
 import by.khmel.secureapplication.domain.User;
 import by.khmel.secureapplication.repository.RoleRepository;
 import by.khmel.secureapplication.repository.UserRepository;
+import by.khmel.secureapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;

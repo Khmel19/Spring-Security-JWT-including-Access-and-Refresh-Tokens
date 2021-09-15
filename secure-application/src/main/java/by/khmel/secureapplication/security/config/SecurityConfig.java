@@ -1,8 +1,9 @@
-package by.khmel.secureapplication.security;
+package by.khmel.secureapplication.security.config;
 
 import by.khmel.secureapplication.filter.AuthenticationFilter;
 import by.khmel.secureapplication.filter.AuthorizationFilter;
 import by.khmel.secureapplication.security.securityutil.AlgorithmGenerator;
+import by.khmel.secureapplication.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,10 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManagerBean(),algorithmGeneratorBean());
+        AuthenticationFilter authenticationFilter = getAuthenticationFilter();
         authenticationFilter.setFilterProcessesUrl("/api/login");
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers("/api/login/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/token/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
@@ -49,7 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AlgorithmGenerator algorithmGeneratorBean(){
+    public AlgorithmGenerator algorithmGeneratorBean() {
         return new AlgorithmGenerator();
+    }
+
+    private AuthenticationFilter getAuthenticationFilter() throws Exception {
+        return new AuthenticationFilter(getApplicationContext().getBean(TokenService.class),
+                authenticationManagerBean());
     }
 }
