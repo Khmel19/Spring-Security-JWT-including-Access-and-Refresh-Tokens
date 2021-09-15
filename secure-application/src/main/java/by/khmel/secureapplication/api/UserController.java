@@ -2,11 +2,16 @@ package by.khmel.secureapplication.api;
 
 import by.khmel.secureapplication.domain.Role;
 import by.khmel.secureapplication.domain.User;
+import by.khmel.secureapplication.dto.RoleToUserDTO;
 import by.khmel.secureapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,11 +27,24 @@ public class UserController {
 
     @PostMapping("/users/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-        return ResponseEntity.ok().body(userService.saveUser(user));
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
+        return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        return ResponseEntity.ok().body(userService.saveRole(role));
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
+        return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
+
+    @PostMapping("/role/addtouser")
+    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserDTO roleToUser) {
+        userService.addRoleToUser(roleToUser.getUsername(), roleToUser.getRoleName());
+        return ResponseEntity.ok().build();
+    }
+
+//    @PostMapping("/role/addtouser")
+//    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+//
+//    }
 }
