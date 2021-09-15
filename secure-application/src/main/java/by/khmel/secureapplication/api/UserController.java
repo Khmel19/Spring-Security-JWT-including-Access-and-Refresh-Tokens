@@ -6,6 +6,7 @@ import by.khmel.secureapplication.dto.RoleToUserDTO;
 import by.khmel.secureapplication.service.TokenService;
 import by.khmel.secureapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -46,7 +47,12 @@ public class UserController {
     }
 
     @GetMapping("/token/refresh")
-    public void getAccessToken(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        tokenService.updateAccessToken(request, response);
+    public void getAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            tokenService.updateAccessToken(request, response);
+        }catch (Exception exception){
+            response.setHeader("error", exception.getMessage());
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+        }
     }
 }
